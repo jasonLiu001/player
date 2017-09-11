@@ -174,8 +174,7 @@ namespace player
         static void Main(string[] args)
         {
             //设置计时器
-            //SetTimer();
-            GetPlanText();
+            SetTimer();
             Console.ReadLine();
         }
     }
