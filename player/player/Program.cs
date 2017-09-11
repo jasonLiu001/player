@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -12,55 +13,76 @@ namespace player
     class Program
     {
         /// <summary>
-        /// 文件路径
-        /// </summary>
-        public static string filePath = ConfigurationManager.AppSettings["filePath"].ToString();
-
-        /// <summary>
         /// 计时器
         /// </summary>
-        private static System.Timers.Timer aTimer = new System.Timers.Timer();
+        static System.Timers.Timer aTimer = new System.Timers.Timer();
 
         /// <summary>
         /// 上次的计划文字
         /// </summary>
-        private static string lastPlanText = string.Empty;
+        static string lastPlanText = string.Empty;
 
-        static void Main(string[] args)
+        /// <summary>
+        /// 设置计时器
+        /// </summary>
+        static void SetTimer()
         {
-            //设置计时器
-            //SetTimer();
-            GetPlanText();
-            Console.ReadLine();
+            aTimer.Elapsed += new ElapsedEventHandler(TimeEvent);
+            // 设置引发时间的时间间隔 此处设置为１秒（１０００毫秒）
+            aTimer.Interval = 10000;
+            aTimer.Enabled = true;
         }
 
         /// <summary>
-        /// 获取计划字符串
+        /// 计时器定时触发事件
         /// </summary>
-        /// <returns></returns>
-        private static string GetPlanText()
+        static void TimeEvent(object sender, ElapsedEventArgs e)
         {
-            var txt = string.Empty;
-            var titleText = GetWindowCaptionTitle();
-            var txtArray = titleText.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            //在23:50到0:30之间不执行跟单
+            var year = DateTime.Now.Year;
+            var month = DateTime.Now.Month;
+            var day = DateTime.Now.Day;
+            //当天23:50
+            var stopTime1 = new DateTime(year, month, day, 23, 49, 0);
+            var stopTimer2 = stopTime1.AddMinutes(42);
 
-            for (var i = 0; i < txtArray.Length; i++)
+            if (DateTime.Now >= stopTime1 && DateTime.Now <= stopTimer2) return;
+
+            try
             {
-                var itemText = txtArray[i];
-                if (itemText.Contains("计划进行"))
+                //首次
+                if (string.IsNullOrEmpty(lastPlanText))
                 {
-                    txt = itemText;
-                    break;
+                    var titleText = GetWindowCaptionTitle();
+                    if (string.IsNullOrEmpty(titleText)) return;
+
+                    //保存最新的计划文本
+                    lastPlanText = titleText;
+                    //执行投注                
+                    StartInvest();
+                    return;
                 }
+
+                var newTitleText = GetWindowCaptionTitle();
+                if (newTitleText == lastPlanText || string.IsNullOrEmpty(newTitleText)) return; //计划未更新
+
+                //保存最新的计划文本
+                lastPlanText = newTitleText;
+                //执行投注
+                StartInvest();
             }
-            return txt;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
         }
 
         /// <summary>
         /// 获取窗口标题文字
         /// </summary>
         /// <returns></returns>
-        private static string GetWindowCaptionTitle()
+        static string GetWindowCaptionTitle()
         {
             IntPtr maindHwnd = Win32.FindWindow("WTWindow", null); //获取窗口句柄
             if (maindHwnd == IntPtr.Zero)
@@ -81,41 +103,67 @@ namespace player
             return windowCaptionTitle;
         }
 
-
         /// <summary>
-        /// 设置计时器
+        /// 获取计划字符串
         /// </summary>
-        private static void SetTimer()
+        /// <returns>
+        ///返回结果： 095-096期 后一/个位→13569← 计划进行期数：[1]
+        /// </returns>
+        static string GetPlanText()
         {
-            aTimer.Elapsed += new ElapsedEventHandler(TimeEvent);
-            // 设置引发时间的时间间隔 此处设置为１秒（１０００毫秒）
-            aTimer.Interval = 10000;
-            aTimer.Enabled = true;
+            var txt = string.Empty;
+            var titleText = GetWindowCaptionTitle();
+            var txtArray = titleText.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            for (var i = 0; i < txtArray.Length; i++)
+            {
+                var itemText = txtArray[i];
+                if (itemText.Contains("计划进行"))
+                {
+                    txt = itemText;
+                    break;
+                }
+            }
+            return txt;
         }
 
         /// <summary>
-        /// 计时器定时触发事件
+        /// 获取投注号码
         /// </summary>
-        private static void TimeEvent(object sender, ElapsedEventArgs e)
+        /// <returns>
+        ///返回结果用逗号分隔： 3,4,6
+        /// </returns>
+        static string GetInvestNumbers()
         {
-            //首次
-            if (string.IsNullOrEmpty(lastPlanText))
+            var investNumber = string.Empty;
+            var planText = GetPlanText();
+            var number = planText.Substring(planText.IndexOf('→') + 1, planText.IndexOf('←') - planText.IndexOf('→') - 1);
+            var stringBuilder = new StringBuilder();
+            for (var i = 0; i < number.Length; i++)
             {
-                var titleText = GetWindowCaptionTitle();
-                //保存文本
-                lastPlanText = titleText;
-                //保存到文件
-                Console.WriteLine(titleText);
-                return;
+                stringBuilder.Append(number[i]);
+                stringBuilder.Append(",");
             }
+            stringBuilder.Remove(stringBuilder.ToString().Length - 1, 1);
+            investNumber = stringBuilder.ToString();
+            return investNumber;
+        }
 
-            var newTitleText = GetWindowCaptionTitle();
-            if (newTitleText == lastPlanText) return; //计划未更新
+        /// <summary>
+        /// 执行投注
+        /// </summary>
+        static void StartInvest()
+        {
+            var investNumbers = GetInvestNumbers();
+            if (string.IsNullOrEmpty(investNumbers)) return;
+            Process.Start("cmd.exe", "/C node C:\\GitHub\\game-play-simulator\\dist\\CommandApp.js -n " + investNumbers);
+        }
 
-            //保存新计划文本
-            lastPlanText = newTitleText;
-            //保存到文件
-            Console.WriteLine(newTitleText);
+        static void Main(string[] args)
+        {
+            //设置计时器
+            SetTimer();
+            Console.ReadLine();
         }
     }
 }
