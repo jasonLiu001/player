@@ -137,7 +137,12 @@ namespace player
         {
             var investNumber = string.Empty;
             var planText = GetPlanText();
+            //投注号码
             var number = planText.Substring(planText.IndexOf('→') + 1, planText.IndexOf('←') - planText.IndexOf('→') - 1);
+            //当前计划期数 期数为1投注
+            var count = planText.Substring(planText.IndexOf('[') + 1, planText.IndexOf(']') - planText.IndexOf('[') - 1);
+            if (count != "1") return investNumber;
+
             var stringBuilder = new StringBuilder();
             for (var i = 0; i < number.Length; i++)
             {
@@ -163,6 +168,7 @@ namespace player
         {
             //设置计时器
             SetTimer();
+            //GetInvestNumbers();
             Console.ReadLine();
         }
     }
