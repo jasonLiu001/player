@@ -120,9 +120,14 @@ namespace player
                 var itemText = txtArray[i];
                 if (itemText.Contains("计划进行"))
                 {
-                    txt = itemText;
-                    break;
+                    //上期中的时候才跟    
+                    if (i > 0 && txtArray[i - 1].Contains("中"))
+                    {
+                        txt = itemText;
+                        break;
+                    }
                 }
+
             }
             return txt;
         }
@@ -137,6 +142,8 @@ namespace player
         {
             var investNumber = string.Empty;
             var planText = GetPlanText();
+            if (string.IsNullOrEmpty(planText)) return investNumber;
+
             //投注号码
             var number = planText.Substring(planText.IndexOf('→') + 1, planText.IndexOf('←') - planText.IndexOf('→') - 1);
             //当前计划期数 期数为1投注
@@ -167,7 +174,8 @@ namespace player
         static void Main(string[] args)
         {
             //设置计时器
-            SetTimer();
+            //SetTimer();
+            GetPlanText();
             Console.ReadLine();
         }
     }
