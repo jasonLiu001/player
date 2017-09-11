@@ -161,14 +161,13 @@ namespace player
         {
             var investNumbers = GetInvestNumbers();
             if (string.IsNullOrEmpty(investNumbers)) return;
-            Process.Start("cmd.exe", "/C node C:\\GitHub\\game-play-simulator\\dist\\CommandApp.js -n " + investNumbers);
+            Process.Start("cmd.exe", "/C cd C:\\GitHub\\game-play-simulator\\dist && node CommandApp.js -n " + investNumbers);
         }
 
         static void Main(string[] args)
         {
             //设置计时器
             SetTimer();
-            //GetInvestNumbers();
             Console.ReadLine();
         }
     }
