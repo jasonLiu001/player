@@ -23,7 +23,7 @@ namespace player
         /// <summary>
         /// 自动投注node程序所在路径
         /// </summary>
-        static string nodeAppPath = ConfigurationManager.AppSettings["nodeAppPath"].ToString().ToLower();
+        static string nodeAppPath = ConfigurationManager.AppSettings["nodeAppPath"].ToString();
         /// <summary>
         /// 元角分模式：  元：1,  角：10，  分：100，  厘：1000
         /// </summary>
