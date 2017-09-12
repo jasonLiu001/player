@@ -66,9 +66,11 @@ namespace player
             DateTime stopTime1 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Convert.ToInt32(startTime.Split(':')[0]), Convert.ToInt32(startTime.Split(':')[1]), 0);
             DateTime stopTimer2 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Convert.ToInt32(endTime.Split(':')[0]), Convert.ToInt32(endTime.Split(':')[1]), 0);
             //超出投注时间不执行投注
-            if (DateTime.Now < stopTime1 || DateTime.Now > stopTimer2)
+            if (DateTime.Now < stopTime1) return;
+            if (DateTime.Now > stopTimer2)
             {
-                //执行关机命令
+                //关机
+                Process.Start("shutdown.exe", "-s -t 30");
                 return;
             }
 
@@ -192,7 +194,7 @@ namespace player
         {
             var investNumbers = GetInvestNumbers();
             if (string.IsNullOrEmpty(investNumbers)) return;
-            Process.Start("cmd.exe", $"/C cd {nodeAppPath} && node CommandApp.js -n {investNumbers} -a {awardModel} -m {maxAccountReached} -l {maxLoseAccountReached}" );
+            Process.Start("cmd.exe", $"/C cd {nodeAppPath} && node CommandApp.js -n {investNumbers} -a {awardModel} -m {maxAccountReached} -l {maxLoseAccountReached}");
         }
 
         static void Main(string[] args)
