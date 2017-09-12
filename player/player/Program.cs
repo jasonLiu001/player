@@ -13,6 +13,31 @@ namespace player
     class Program
     {
         /// <summary>
+        /// 开始投注时间
+        /// </summary>
+        static string startTime = ConfigurationManager.AppSettings["startTime"].ToString();
+        /// <summary>
+        /// 结束投注时间
+        /// </summary>
+        static string endTime = ConfigurationManager.AppSettings["endTime"].ToString();
+        /// <summary>
+        /// 自动投注node程序所在路径
+        /// </summary>
+        static string nodeAppPath = ConfigurationManager.AppSettings["nodeAppPath"].ToString();
+        /// <summary>
+        /// 元角分模式：  元：1,  角：10，  分：100，  厘：1000
+        /// </summary>
+        static int awardModel = Convert.ToInt32(ConfigurationManager.AppSettings["awardModel"]);
+        /// <summary>
+        /// 当前账户最大值 单位：元  值0:表示不限制
+        /// </summary>
+        static int maxAccountReached = Convert.ToInt32(ConfigurationManager.AppSettings["maxAccountReached"]);
+        /// <summary>
+        /// 当前账户最小值 单元：元  值0:表示不限制
+        /// </summary>
+        static int maxLoseAccountReached = Convert.ToInt32(ConfigurationManager.AppSettings["maxLoseAccountReached"]);
+
+        /// <summary>
         /// 计时器
         /// </summary>
         static System.Timers.Timer aTimer = new System.Timers.Timer();
@@ -38,15 +63,14 @@ namespace player
         /// </summary>
         static void TimeEvent(object sender, ElapsedEventArgs e)
         {
-            //在23:50到0:30之间不执行跟单
-            var year = DateTime.Now.Year;
-            var month = DateTime.Now.Month;
-            var day = DateTime.Now.Day;
-            //当天23:50
-            var stopTime1 = new DateTime(year, month, day, 23, 49, 0);
-            var stopTimer2 = stopTime1.AddMinutes(42);
-
-            if (DateTime.Now >= stopTime1 && DateTime.Now <= stopTimer2) return;
+            DateTime stopTime1 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Convert.ToInt32(startTime.Split(':')[0]), Convert.ToInt32(startTime.Split(':')[1]), 0);
+            DateTime stopTimer2 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Convert.ToInt32(endTime.Split(':')[0]), Convert.ToInt32(endTime.Split(':')[1]), 0);
+            //超出投注时间不执行投注
+            if (DateTime.Now < stopTime1 || DateTime.Now > stopTimer2)
+            {
+                //执行关机命令
+                return;
+            }
 
             try
             {
@@ -168,7 +192,7 @@ namespace player
         {
             var investNumbers = GetInvestNumbers();
             if (string.IsNullOrEmpty(investNumbers)) return;
-            Process.Start("cmd.exe", "/C cd C:\\GitHub\\game-play-simulator\\dist && node CommandApp.js -n " + investNumbers);
+            Process.Start("cmd.exe", $"/C cd {nodeAppPath} && node CommandApp.js -n {investNumbers} -a {awardModel} -m {maxAccountReached} -l {maxLoseAccountReached}" );
         }
 
         static void Main(string[] args)
