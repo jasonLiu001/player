@@ -77,7 +77,8 @@ namespace player
                 }
 
                 var newTitleText = GetWindowCaptionTitle();
-                if (newTitleText == lastPlanText || string.IsNullOrEmpty(newTitleText)) return; //计划未更新
+                if (string.IsNullOrEmpty(newTitleText)) return;
+                if (newTitleText == lastPlanText) return; //计划未更新
 
                 //保存最新的计划文本
                 lastPlanText = newTitleText;
