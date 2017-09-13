@@ -215,7 +215,6 @@ namespace player
             {
                 FileStream fs1 = new FileStream(logFile, FileMode.Create, FileAccess.Write);//创建写入文件 
                 StreamWriter sw = new StreamWriter(fs1);
-                sw.WriteLine(msg);//开始写入值
                 sw.Close();
                 fs1.Close();
             }
@@ -223,7 +222,6 @@ namespace player
             {
                 FileStream fs = new FileStream(logFile, FileMode.Open, FileAccess.Write);
                 StreamWriter sr = new StreamWriter(fs);
-                sr.WriteLine(msg);//开始写入值
                 sr.Close();
                 fs.Close();
             }
