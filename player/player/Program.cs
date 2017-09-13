@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -99,6 +100,7 @@ namespace player
             }
             catch (Exception ex)
             {
+                WriteLog(ex.Message);
                 Console.WriteLine(ex.Message);
             }
 
@@ -195,6 +197,30 @@ namespace player
             var investNumbers = GetInvestNumbers();
             if (string.IsNullOrEmpty(investNumbers)) return;
             Process.Start("cmd.exe", $"/C cd {nodeAppPath} && node CommandApp.js -n {investNumbers} -a {awardModel} -m {maxAccountReached} -l {maxLoseAccountReached}");
+        }
+
+        /// <summary>
+        /// 输出日志
+        /// </summary>
+        static void WriteLog(string msg)
+        {
+            var logFile = System.Environment.CurrentDirectory + "\\error.log";
+            if (!File.Exists(logFile))
+            {
+                FileStream fs1 = new FileStream(logFile, FileMode.Create, FileAccess.Write);//创建写入文件 
+                StreamWriter sw = new StreamWriter(fs1);
+                sw.WriteLine(msg);//开始写入值
+                sw.Close();
+                fs1.Close();
+            }
+            else
+            {
+                FileStream fs = new FileStream(logFile, FileMode.Open, FileAccess.Write);
+                StreamWriter sr = new StreamWriter(fs);
+                sr.WriteLine(msg);//开始写入值
+                sr.Close();
+                fs.Close();
+            }
         }
 
         static void Main(string[] args)
