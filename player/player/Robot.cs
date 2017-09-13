@@ -114,9 +114,9 @@ namespace player
             //存储字符的容量
             var txtLength = Win32.SendMessageW2(planWin, Constant.WM_GETTEXTLENGTH, 0, 0);
 
-            Byte[] byt = new Byte[txtLength];
-            Win32.SendMessageW2(planWin, Constant.WM_GETTEXT, txtLength+1, byt);
-            captionTitle = Encoding.Default.GetString(byt);
+            Byte[] byt = new Byte[txtLength * 2];
+            Win32.SendMessageW2(planWin, Constant.WM_GETTEXT, txtLength * 2 + 1, byt);
+            captionTitle = Encoding.Unicode.GetString(byt);
             return captionTitle;
         }
 
