@@ -195,7 +195,7 @@ namespace player
         {
             var investNumbers = GetInvestNumbers();
             if (string.IsNullOrEmpty(investNumbers)) return;
-            process = Process.Start("cmd.exe", $"/C cd {nodeAppPath} && node CommandApp.js -n {investNumbers} -a {awardModel} -m {maxAccountReached} -l {maxLoseAccountReached} -d {beginDoubleCount}");
+            //process = Process.Start("cmd.exe", $"/C cd {nodeAppPath} && node CommandApp.js -n {investNumbers} -a {awardModel} -m {maxAccountReached} -l {maxLoseAccountReached} -d {beginDoubleCount}");
         }
 
         /// <summary>
