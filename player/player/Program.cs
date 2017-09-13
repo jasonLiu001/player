@@ -39,11 +39,16 @@ namespace player
         static readonly int maxLoseAccountReached = Convert.ToInt32(ConfigurationManager.AppSettings["maxLoseAccountReached"]);
 
         /// <summary>
-        /// 上次的计划文字
+        /// 上次的计划文字长度
         /// </summary>
-        static string lastPlanText = string.Empty;
+        static int lastPlanTextLength = 0;
 
-        static Process process = null;  
+        /// <summary>
+        /// 当前计划文字长度
+        /// </summary>
+        static int currentPlanTextLenght = 0;
+
+        static Process process = null;
 
         /// <summary>
         /// 计时器定时触发事件
@@ -67,13 +72,13 @@ namespace player
             try
             {
                 //首次
-                if (string.IsNullOrEmpty(lastPlanText))
+                if (lastPlanTextLength == 0 && currentPlanTextLenght == 0)
                 {
                     var titleText = GetWindowCaptionTitle();
                     if (string.IsNullOrEmpty(titleText)) return;
 
-                    //保存最新的计划文本
-                    lastPlanText = titleText;
+                    //更新计划文字长度
+                    lastPlanTextLength = currentPlanTextLenght;
                     //执行投注                
                     StartInvest();
                     WriteLog($"titleText:{titleText}");
@@ -82,11 +87,11 @@ namespace player
                 }
 
                 var newTitleText = GetWindowCaptionTitle();
-                if (string.IsNullOrEmpty(newTitleText)) return;
-                if (newTitleText == lastPlanText) return; //计划未更新
+                //计划未更新
+                if (string.IsNullOrEmpty(newTitleText) || lastPlanTextLength == currentPlanTextLenght) return;
 
-                //保存最新的计划文本
-                lastPlanText = newTitleText;
+                //更新计划文字长度
+                lastPlanTextLength = currentPlanTextLenght;
                 //执行投注
                 StartInvest();
                 WriteLog($"newTitleText:{newTitleText}");
@@ -121,6 +126,8 @@ namespace player
             IntPtr planWin = Win32.FindWindowEx(maindHwnd, firstChildWin, "Edit", null);  //计划窗口
             //存储字符的容量
             var txtLength = Win32.SendMessageW2(planWin, Constant.WM_GETTEXTLENGTH, 0, 0);
+            //更新当前计划文字长度
+            currentPlanTextLenght = txtLength;
             WriteLog($"txtLength:{txtLength}");
             Console.WriteLine($"txtLength:{txtLength}");
 
