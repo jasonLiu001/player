@@ -73,6 +73,7 @@ namespace player
                     lastPlanText = titleText;
                     //执行投注                
                     StartInvest();
+                    WriteLog($"titleText:{titleText}");
                     Console.WriteLine($"titleText:{titleText}");
                     return;
                 }
@@ -85,6 +86,7 @@ namespace player
                 lastPlanText = newTitleText;
                 //执行投注
                 StartInvest();
+                WriteLog($"newTitleText:{newTitleText}");
                 Console.WriteLine($"newTitleText:{newTitleText}");
             }
             catch (Exception ex)
@@ -116,6 +118,7 @@ namespace player
             IntPtr planWin = Win32.FindWindowEx(maindHwnd, firstChildWin, "Edit", null);  //计划窗口
             //存储字符的容量
             var txtLength = Win32.SendMessageW2(planWin, Constant.WM_GETTEXTLENGTH, 0, 0);
+            WriteLog($"txtLength:{txtLength}");
             Console.WriteLine($"txtLength:{txtLength}");
 
             Byte[] byt = new Byte[txtLength * 2];
