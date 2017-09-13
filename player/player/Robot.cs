@@ -24,6 +24,10 @@ namespace player
         /// </summary>
         private static readonly string nodeAppPath = ConfigurationManager.AppSettings["nodeAppPath"].ToString();
         /// <summary>
+        /// 起始投注倍数 默认从1倍开始
+        /// </summary>
+        private static readonly int beginDoubleCount = Convert.ToInt32(ConfigurationManager.AppSettings["beginDoubleCount"]);
+        /// <summary>
         /// 元角分模式：  元：1,  角：10，  分：100，  厘：1000
         /// </summary>
         private static readonly int awardModel = Convert.ToInt32(ConfigurationManager.AppSettings["awardModel"]);
@@ -179,7 +183,7 @@ namespace player
         {
             var investNumbers = GetInvestNumbers();
             if (string.IsNullOrEmpty(investNumbers)) return;
-            Process.Start("cmd.exe", $"/C cd {nodeAppPath} && node CommandApp.js -n {investNumbers} -a {awardModel} -m {maxAccountReached} -l {maxLoseAccountReached}");
+            Process.Start("cmd.exe", $"/C cd {nodeAppPath} && node CommandApp.js -n {investNumbers} -a {awardModel} -m {maxAccountReached} -l {maxLoseAccountReached} -d {beginDoubleCount}");
         }
 
         /// <summary>
