@@ -80,9 +80,7 @@ namespace player
                     //更新计划文字长度
                     lastPlanTextLength = currentPlanTextLenght;
                     //执行投注                
-                    StartInvest();
-                    WriteLog($"titleText:{titleText}");
-                    Console.WriteLine($"titleText:{titleText}");
+                    StartInvest();                 
                     return;
                 }
 
@@ -94,8 +92,6 @@ namespace player
                 lastPlanTextLength = currentPlanTextLenght;
                 //执行投注
                 StartInvest();
-                WriteLog($"newTitleText:{newTitleText}");
-                Console.WriteLine($"newTitleText:{newTitleText}");
             }
             catch (Exception ex)
             {
@@ -128,8 +124,6 @@ namespace player
             var txtLength = Win32.SendMessageW2(planWin, Constant.WM_GETTEXTLENGTH, 0, 0);
             //更新当前计划文字长度
             currentPlanTextLenght = txtLength;
-            WriteLog($"txtLength:{txtLength}");
-            Console.WriteLine($"txtLength:{txtLength}");
 
             Byte[] byt = new Byte[txtLength * 2];
             Win32.SendMessageW2(planWin, Constant.WM_GETTEXT, txtLength * 2 + 1, byt);
@@ -202,7 +196,7 @@ namespace player
         {
             var investNumbers = GetInvestNumbers();
             if (string.IsNullOrEmpty(investNumbers)) return;
-            //process = Process.Start("cmd.exe", $"/C cd {nodeAppPath} && node CommandApp.js -n {investNumbers} -a {awardModel} -m {maxAccountReached} -l {maxLoseAccountReached} -d {beginDoubleCount}");
+            process = Process.Start("cmd.exe", $"/C cd {nodeAppPath} && node CommandApp.js -n {investNumbers} -a {awardModel} -m {maxAccountReached} -l {maxLoseAccountReached} -d {beginDoubleCount}");
         }
 
         /// <summary>
