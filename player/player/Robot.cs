@@ -96,7 +96,9 @@ namespace player
             IntPtr maindHwnd = Win32.FindWindow("WTWindow", null); //获取窗口句柄
             if (maindHwnd == IntPtr.Zero)
             {
-                Console.WriteLine("未找到对应的窗口");
+                var msg = "未找到对应的窗口";
+                WriteLog(msg);
+                Console.WriteLine(msg);
                 return string.Empty;
             }
 
