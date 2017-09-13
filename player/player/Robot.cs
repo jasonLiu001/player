@@ -97,25 +97,26 @@ namespace player
         /// <returns></returns>
         public string GetWindowCaptionTitle()
         {
+            var captionTitle = string.Empty;
             IntPtr maindHwnd = Win32.FindWindow("WTWindow", null); //获取窗口句柄
             if (maindHwnd == IntPtr.Zero)
             {
                 var msg = "未找到对应的窗口";
                 WriteLog(msg);
                 Console.WriteLine(msg);
-                return string.Empty;
+                return captionTitle;
             }
 
             //第一个子窗口
             IntPtr firstChildWin = Win32.FindWindowEx(maindHwnd, IntPtr.Zero, "Edit", null);  //第一个子窗口
             //计划窗口 maindHwnd为主窗口 表示在这里面查找 如果替换成子窗口，说明在子窗口中查找
             IntPtr planWin = Win32.FindWindowEx(maindHwnd, firstChildWin, "Edit", null);  //计划窗口
-            int maxLength = 1000000;
-
-            IntPtr buffer = Marshal.AllocHGlobal((maxLength + 1) * 2);
-            Win32.SendMessageW2(planWin, Constant.WM_GETTEXT, (uint)maxLength, buffer);
-            string windowCaptionTitle = Marshal.PtrToStringUni(buffer);
-            return windowCaptionTitle;
+            //存储字符的容量
+            var maxLength = 3000;
+            StringBuilder buffer = new StringBuilder(maxLength);
+            Win32.SendMessageW2(planWin, Constant.WM_GETTEXT, maxLength, buffer);
+            captionTitle = buffer.ToString();
+            return captionTitle;
         }
 
         /// <summary>

@@ -6,22 +6,19 @@ using System.Runtime.InteropServices;
 
 namespace player
 {
-    static class Win32
+    public class Win32
     {
         [DllImport("user32.dll")]
-
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [System.Runtime.InteropServices.DllImportAttribute("user32.dll", EntryPoint = "SendMessageW")]
-        public static extern int SendMessageW2([System.Runtime.InteropServices.InAttribute()] System.IntPtr hWnd, uint Msg, uint wParam, IntPtr lParam);
+        public static extern int SendMessageW2([System.Runtime.InteropServices.InAttribute()] System.IntPtr hWnd, uint Msg, int wParam, StringBuilder lParam);
 
 
         [DllImport("User32.dll", EntryPoint = "SendMessage")]
-
-        public static extern int SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, string lParam);
+        public static extern int SendMessage(IntPtr hWnd, uint Msg, int wParam, StringBuilder lParam);
 
         [DllImport("User32.dll")]
-
         public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string strclass, string FrmText);
     }
 }
