@@ -112,10 +112,11 @@ namespace player
             //计划窗口 maindHwnd为主窗口 表示在这里面查找 如果替换成子窗口，说明在子窗口中查找
             IntPtr planWin = Win32.FindWindowEx(maindHwnd, firstChildWin, "Edit", null);  //计划窗口
             //存储字符的容量
-            var maxLength = 3000;
-            StringBuilder buffer = new StringBuilder(maxLength);
-            Win32.SendMessageW2(planWin, Constant.WM_GETTEXT, maxLength, buffer);
-            captionTitle = buffer.ToString();
+            var txtLength = Win32.SendMessageW2(planWin, Constant.WM_GETTEXTLENGTH, 0, 0);
+
+            Byte[] byt = new Byte[txtLength];
+            Win32.SendMessageW2(planWin, Constant.WM_GETTEXT, txtLength+1, byt);
+            captionTitle = Encoding.Default.GetString(byt);
             return captionTitle;
         }
 
