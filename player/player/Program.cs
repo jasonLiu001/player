@@ -80,7 +80,7 @@ namespace player
                     //更新计划文字长度
                     lastPlanTextLength = currentPlanTextLenght;
                     //执行投注                
-                    StartInvest();                 
+                    StartInvest();
                     return;
                 }
 
@@ -189,6 +189,20 @@ namespace player
             return investNumber;
         }
 
+        static string GetPeriodString()
+        {
+            var periodString = string.Empty;
+            var planText = GetPlanText();
+            if (string.IsNullOrEmpty(planText)) return periodString;
+
+            var year = DateTime.Now.Year;
+            var month = DateTime.Now.Month < 10 ? "0" + DateTime.Now.Month : DateTime.Now.Month.ToString();
+            var day = DateTime.Now.Day < 10 ? "0" + DateTime.Now.Day : DateTime.Now.Day.ToString();
+
+            periodString = year + month + day + "-" + planText.Split('-')[0];
+            return periodString;
+        }
+
         /// <summary>
         /// 执行投注
         /// </summary>
@@ -196,7 +210,8 @@ namespace player
         {
             var investNumbers = GetInvestNumbers();
             if (string.IsNullOrEmpty(investNumbers)) return;
-            process = Process.Start("cmd.exe", $"/C cd {nodeAppPath} && node CommandApp.js -n {investNumbers} -a {awardModel} -m {maxAccountReached} -l {maxLoseAccountReached} -d {beginDoubleCount}");
+            var periodString = GetPeriodString();
+            process = Process.Start("cmd.exe", $"/C cd {nodeAppPath} && node CommandApp.js -n {investNumbers} -a {awardModel} -m {maxAccountReached} -l {maxLoseAccountReached} -d {beginDoubleCount} -p {periodString}");
         }
 
         /// <summary>
