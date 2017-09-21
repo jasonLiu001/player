@@ -197,8 +197,8 @@ namespace player
                 //首次
                 if (lastPlanTextLength == 0 && currentPlanTextLenght == 0)
                 {
-                    var titleText = GetFullPlan();
-                    if (string.IsNullOrEmpty(titleText)) return;
+                    var planText = GetFullPlan();
+                    if (string.IsNullOrEmpty(planText)) return;
 
                     //更新计划文字长度
                     lastPlanTextLength = currentPlanTextLenght;
@@ -207,9 +207,9 @@ namespace player
                     return;
                 }
 
-                var newTitleText = GetFullPlan();
+                var newPlanText = GetFullPlan();
                 //计划未更新
-                if (string.IsNullOrEmpty(newTitleText) || lastPlanTextLength == currentPlanTextLenght) return;
+                if (string.IsNullOrEmpty(newPlanText) || lastPlanTextLength == currentPlanTextLenght) return;
 
                 //更新计划文字长度
                 lastPlanTextLength = currentPlanTextLenght;

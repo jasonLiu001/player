@@ -10,15 +10,11 @@ namespace player
     class Program
     {
         /// <summary>
-        /// 计划实体
-        /// </summary>
-        static PlanMonitor plan = new PlanMonitor();
-
-        /// <summary>
         /// 计时器定时触发事件
         /// </summary>
         static void TimeEvent(object sender, ElapsedEventArgs e)
         {
+            PlanMonitor plan = new PlanMonitor();
             plan.Start();
         }
 
