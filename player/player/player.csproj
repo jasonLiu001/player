@@ -43,8 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="common\Constant.cs" />
-    <Compile Include="common\Win32.cs" />
+    <Compile Include="lib\WMessage.cs" />
+    <Compile Include="lib\Win32.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="PlanMonitor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace player
 {
-    public static class Constant
+    public static class WMessage
     {
         //创建一个窗口   
         public const int WM_CREATE = 0x01;
