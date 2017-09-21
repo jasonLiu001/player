@@ -62,7 +62,7 @@ namespace player
             IntPtr mainHwnd = Win32.FindWindow("WTWindow", null); //获取窗口句柄
             if (mainHwnd == IntPtr.Zero)
             {
-                var msg = "未找到对应的窗口";
+                var msg = "白猫计划软件窗口查找失败";
                 Logger.WriteLog(msg);
                 Console.WriteLine(msg);
                 return fullPlan;
