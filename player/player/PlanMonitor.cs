@@ -43,15 +43,15 @@ namespace player
         /// <summary>
         /// 调用外部命令的进程
         /// </summary>
-        private static Process process = null;
+        public static Process process = null;
         /// <summary>
         /// 当前计划文字长度
         /// </summary>
-        private static int currentPlanTextLenght = 0;
+        public static int currentPlanTextLenght = 0;
         /// <summary>
         /// 上次的计划文字长度
         /// </summary>
-        private static int lastPlanTextLength = 0;
+        public static int lastPlanTextLength = 0;
 
         /// <summary>
         /// 获取完整的计划字符串
